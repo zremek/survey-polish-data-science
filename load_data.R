@@ -52,8 +52,15 @@ kaggle_18_pl <- read_csv("data/kaggle-survey-2018/multipleChoiceResponses.csv")
 kaggle_18_pl <- kaggle_18_pl %>% filter(Q3 == "Poland")
 kaggle_18_schema <- read_csv("data/kaggle-survey-2018/SurveySchema.csv")
 
+### PyData Warsaw 2018
+### https://github.com/stared/random_data_explorations/tree/master/201811_pydatawaw2018
+pydata_18_pl <- read_csv("https://raw.githubusercontent.com/stared/random_data_explorations/master/201811_pydatawaw2018/pdwc2018_anonym.csv")
+pydata_18_pl <- pydata_18_pl %>% filter(Country == "Poland")
+
+### WhyR? Warsaw 2017
+### https://github.com/WhyR2017/
+whyr_17_pl <- read_csv("https://raw.githubusercontent.com/WhyR2017/konkursy/master/dane_z_formularza_rejestracyjnego.csv")
+whyr_17_pl <- whyr_17_pl %>% filter(Kraj == "Polska")
+
 ################################### to do #####################
-# kaggle: check Q26 Do you consider yourself to be a data scientist?	
-# https://github.com/stared/random_data_explorations/tree/master/201811_pydatawaw2018
-# https://github.com/WhyR2017/wizualizacje
-# https://github.com/WhyR2018
+# kaggle: check Q26 Do you consider yourself to be a data scientist?
