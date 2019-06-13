@@ -62,5 +62,3 @@ pydata_18_pl <- pydata_18_pl %>% filter(Country == "Poland")
 whyr_17_pl <- read_csv("https://raw.githubusercontent.com/WhyR2017/konkursy/master/dane_z_formularza_rejestracyjnego.csv")
 whyr_17_pl <- whyr_17_pl %>% filter(Kraj == "Polska")
 
-################################### to do #####################
-# kaggle: check Q26 Do you consider yourself to be a data scientist?
