@@ -134,7 +134,7 @@ wiek <- ggplot(demogr %>% filter(Źródło != "PyData 2018 [n = 284]")) +
 # plot(wiek) # Rys. 8. in chapter 5.1.
 # dev.off()
 
-demogr %>% group_by(poziom_wykształcenia) %>% summarise(n = n()) %>% View()
+# demogr %>% group_by(poziom_wykształcenia) %>% summarise(n = n()) %>% View()
 
 poziom_wyksz_levels <- c(`Licencjat/inżynier` = "Bachelor's degree",
                          `Licencjat/inżynier` = "Bachelor’s degree",
@@ -197,7 +197,7 @@ poziom <- ggplot(demogr %>% filter(Źródło != "PyData 2018 [n = 284]")) +
 # plot(poziom) # Rys. 8. in chapter 5.1.
 # dev.off()
 
-demogr %>% group_by(kierunek_wykształcenia) %>% summarise(n = n()) %>% View()
+# demogr %>% group_by(kierunek_wykształcenia) %>% summarise(n = n()) %>% View()
 
 kier_wykszt_levels <- c(`Biznes/ekonomia`	= "A business discipline (accounting, economics, finance, etc.)",
                         `Biznes/ekonomia` = "A business discipline (ex. accounting, finance, marketing)",
@@ -235,7 +235,7 @@ demogr <- demogr %>% mutate(`Kierunek wykształcenia` = fct_recode(.f = kierunek
                             `Kierunek wykształcenia` = fct_relevel(.f = `Kierunek wykształcenia`, "Brak/odmowa odp.",
                                                                  after = Inf))
 
-prop.table(table(demogr$`Kierunek wykształcenia`, demogr$`Poziom wykształcenia`))
+prop.table(table(demogr$Źródło, demogr$`Kierunek wykształcenia`), 1)
 
 kierunek <- ggplot(demogr %>%
          filter(Źródło != "PyData 2018 [n = 284]" & Źródło != "WhyR? 2017 [n = 202]")) +
@@ -260,7 +260,6 @@ kierunek <- ggplot(demogr %>%
 ##### to do
 
 # demogr %>% mutate(older_than_34 = Wiek %in% c("35 - 44", "45 - 54", "55 - 69"))
-# przekrój wiek/płeć piramidka źródło jako facets
 ggplot(demogr %>% 
          filter(Źródło != "PyData 2018 [n = 284]")) + 
   geom_count(aes(x = `Płeć`, y = fct_rev(Wiek))) +
@@ -291,9 +290,9 @@ ggplot(data = demogr %>%
   geom_bar(aes(x = Płeć, fill = Wiek), position = "fill")  
 
 #### show diff
-demogr %>% 
+plec_wiek <- demogr %>% 
   filter(Płeć %in% c("Kobieta", "Mężczyzna"),
-         # Wiek != "Brak/odmowa odp.",
+         Wiek != "Brak/odmowa odp.", 
          Źródło != "WhyR? 2017 [n = 202]") %>%
   group_by(Wiek) %>% 
   summarise(n = n(), 
@@ -303,7 +302,7 @@ demogr %>%
          pct_K = Kobiety / sum(Kobiety),
          pct_diff = 100 * (pct_K - pct_M)) %>% 
   ggplot() +
-  geom_point(aes(x = Wiek, y = pct_diff, 
+  geom_point(aes(x = fct_rev(Wiek), y = pct_diff, 
                  colour = pct_diff >= 0), size = 5) +
   geom_segment(aes(x = Wiek, 
                    xend = Wiek, 
@@ -312,18 +311,125 @@ demogr %>%
                    colour = pct_diff >= 0), 
                size = 1) +
   geom_hline(yintercept = 0, colour = "gray") +
-  scale_colour_brewer(palette = "Set3") +
+  scale_colour_manual(values = c("#80b1d3", "#fdb462")) +
   theme_minimal(base_family = "serif", base_size = 10) +
-  # scale_y_continuous(labels = scales::percent) +
+  guides(colour = "none") +
   coord_flip() +
-  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie informatyczne",
-       subtitle = "w drugiej kolejności wskazania dotyczą kierunków matematycznych/statystycznych\nlub medycznych/przyrodniczych",
-       caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
-       y = "Różnica w udziale kategorii wiekowej [% kobiet - % mężczyzn]")
+  labs(title = "Udział osób w wieku 18 - 24 jest o ponad 6 pp. wyższy\nwśród kobiet niż wśród mężczyzn",
+       subtitle = 'brak kobiet w grupach wiekowych "mniej niż 18 lat" i "55 - 69"' ,
+       caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
+       x = 'Wiek [wykluczono kategorię "Brak/odmowa odp."]',
+       y = "Różnica w udziale kategorii wiekowej dla wybranych płci [pp. = % kobiet - % mężczyzn]")
 
-# płeć poziom jw
+# png("plec_wiek.png", width = 160, height = 85, units = "mm", res = 300)
+# plot(plec_wiek) # Rys. 11. in chapter 5.1.
+# dev.off()
+
+plec_poziom <- demogr %>% 
+  filter(Płeć %in% c("Kobieta", "Mężczyzna"),
+         `Poziom wykształcenia` != "Brak/odmowa odp.", 
+         Źródło != "WhyR? 2017 [n = 202]") %>%
+  group_by(`Poziom wykształcenia`) %>% 
+  summarise(n = n(), 
+            Mężczyźni = sum(Płeć == "Mężczyzna"),
+            Kobiety = sum(Płeć == "Kobieta")) %>% 
+  mutate(pct_M = Mężczyźni / sum(Mężczyźni),
+         pct_K = Kobiety / sum(Kobiety),
+         pct_diff = 100 * (pct_K - pct_M)) %>% 
+  ggplot() +
+  geom_point(aes(x = fct_rev(`Poziom wykształcenia`), y = pct_diff, 
+                 colour = pct_diff >= 0), size = 5) +
+  geom_segment(aes(x = `Poziom wykształcenia`, 
+                   xend = `Poziom wykształcenia`, 
+                   y = 0, 
+                   yend = pct_diff,
+                   colour = pct_diff >= 0), 
+               size = 1) +
+  geom_hline(yintercept = 0, colour = "gray") +
+  scale_colour_manual(values = c("#80b1d3", "#fdb462")) +
+  theme_minimal(base_family = "serif", base_size = 10) +
+  guides(colour = "none") +
+  coord_flip() +
+  labs(title = "Udział osób z wykształceniem magisterskim jest\no ponad 9 pp. wyższy wśród kobiet niż wśród mężczyzn",
+       subtitle = 'brak kobiet z wykształceniem podstawowym' ,
+       caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
+       x = 'Poziom wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
+       y = "Różnica w udziale poziomu wykształcenia dla wybranych płci\n[pp. = % kobiet - % mężczyzn]")
+
+# png("plec_poziom.png", width = 160, height = 85, units = "mm", res = 300)
+# plot(plec_poziom) # Rys. 12. in chapter 5.1.
+# dev.off()
+
+# exploration
+demogr %>% filter(Płeć != "Brak/odmowa odp.", 
+                  Wiek != "Brak/odmowa odp.", 
+                  `Poziom wykształcenia` != "Brak/odmowa odp.", 
+                  `Kierunek wykształcenia` != "Brak/odmowa odp.") %>%
+  group_by(Płeć, Wiek, `Poziom wykształcenia`, `Kierunek wykształcenia`) %>%
+  summarise(n = n()) %>% ungroup() %>% mutate(pct = n / sum(n)) %>% 
+  top_n(n = 5, wt = n)
+ 
+demogr %>% 
+  filter(`Kierunek wykształcenia` != "Brak/odmowa odp.") %>%
+  mutate(older_than_44 = Wiek %in% c("45 - 54", "55 - 69")) %>%  
+  group_by(`Kierunek wykształcenia`) %>% 
+  summarise(n = n(), 
+            do_44 = sum(older_than_44 == FALSE),
+            powyzej_44 = sum(older_than_44 == TRUE)) %>% 
+  mutate(pct_do_44 = do_44 / sum(do_44),
+         pct_powyzej_44 = powyzej_44 / sum(powyzej_44),
+         pct_diff = 100 * (pct_do_44 - pct_powyzej_44)) %>% 
+  ggplot() +
+  geom_point(aes(x = fct_rev(`Kierunek wykształcenia`), y = pct_diff, 
+                 colour = pct_diff >= 0), size = 5) +
+  geom_segment(aes(x = `Kierunek wykształcenia`, 
+                   xend = `Kierunek wykształcenia`, 
+                   y = 0, 
+                   yend = pct_diff,
+                   colour = pct_diff >= 0), 
+               size = 1) +
+  geom_hline(yintercept = 0, colour = "gray") +
+  scale_colour_manual(values = c("#80b1d3", "#fdb462")) +
+  theme_minimal(base_family = "serif", base_size = 10) +
+  guides(colour = "none") +
+  coord_flip() 
+  # labs(title = "Udział osób z wykształceniem magisterskim jest\no ponad 9 pp. wyższy wśród kobiet niż wśród mężczyzn",
+  #      subtitle = 'brak kobiet z wykształceniem podstawowym' ,
+  #      caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
+  #      x = 'Poziom wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
+  #      y = "Różnica w udziale poziomu wykształcenia dla wybranych płci\n[pp. = % kobiet - % mężczyzn]")
 
 
-# płeć kierunek
-# wiek poziom
-# wiek kierunek
+wiek_kier <- demogr %>% 
+  filter(`Kierunek wykształcenia` != "Brak/odmowa odp.") %>%
+  mutate(older_than_34 = Wiek %in% c("35 - 44", "45 - 54", "55 - 69")) %>%  
+  group_by(`Kierunek wykształcenia`) %>% 
+  summarise(n = n(), 
+            do_34 = sum(older_than_34 == FALSE),
+            powyzej_34 = sum(older_than_34 == TRUE)) %>% 
+  mutate(pct_do_34 = do_34 / sum(do_34),
+         pct_powyzej_34 = powyzej_34 / sum(powyzej_34),
+         pct_diff = 100 * (pct_do_34 - pct_powyzej_34)) %>% 
+  ggplot() +
+  geom_point(aes(x = fct_rev(`Kierunek wykształcenia`), y = pct_diff, 
+                 colour = pct_diff >= 0), size = 5) +
+  geom_segment(aes(x = `Kierunek wykształcenia`, 
+                   xend = `Kierunek wykształcenia`, 
+                   y = 0, 
+                   yend = pct_diff,
+                   colour = pct_diff >= 0), 
+               size = 1) +
+  geom_hline(yintercept = 0, colour = "gray") +
+  scale_colour_manual(values = c("#80b1d3", "#fdb462")) +
+  theme_minimal(base_family = "serif", base_size = 10) +
+  guides(colour = "none") +
+  coord_flip() +
+labs(title = "Udział osób z wykształceniem informatycznym jest\no prawie 13 pp. wyższy wśród osób do 34 r.ż.\nniż dla osób w wieku 35 lat i starszych",
+     subtitle = 'odwrotnie jest dla wykształcenia medycznego/przyrodnicznego' ,
+     caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
+     x = 'Kierunek wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
+     y = "Różnica w udziale kierunku wykształcenia dla grup wiekowych\n[pp. = % do 34 r.ż. - % od 35 r.ż.]")
+
+# png("wiek_kier.png", width = 160, height = 85, units = "mm", res = 300)
+# plot(wiek_kier) # Rys. 12. in chapter 5.1.
+# dev.off()
