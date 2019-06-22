@@ -1,5 +1,1 @@
-# survey-polish-data-scienceUbuntu test
-second Ubuntu test
-another Ubuntu test
-test
-RStudio test
+# survey-polish-data-science
