@@ -35,20 +35,27 @@ k_17_salary <- k_17_salary %>%
     salary_dirty_month_pln = salary_dirty_year_pln / 12,
     salary_clean_month_pln = case_when(
       salary_dirty_year_pln <= 23000 ~ salary_dirty_year_pln,
-      salary_dirty_year_pln > 23000 ~ salary_dirty_year_pln / 12))
+      salary_dirty_year_pln > 23000 ~ salary_dirty_year_pln / 12), 
+    doswiadczenie = fct_recode(.f = Tenure, 
+                               `mniej niż 1 rok` = "Less than a year",
+                               `1 - 2 lata` = "1 to 2 years",
+                               `3 - 5 lat` = "3 to 5 years",
+                               `6 - 10 lat` = "6 to 10 years",
+                               `więcej niż 10 lat` = "More than 10 years"),
+    doswiadczenie = fct_relevel(.f = doswiadczenie, "mniej niż 1 rok", after = 0))
 
 # fix 96 PLN yearly as it should be 96K
 k_17_salary$salary_clean_month_pln[5] <- 96 * 1000 / 12
 
 boxplot(k_17_salary$salary_clean_month_pln ~ k_17_salary$Tenure)
 
+ggplot(k_17_salary %>% 
+         filter(!is.na(salary_clean_month_pln))) +
+  geom_boxplot(aes(x = doswiadczenie, y = salary_clean_month_pln))
+
 # exchange rate to PLN for October 29th 2018
 # https://www.nbp.pl/home.aspx?navid=archa&c=/ascx/tabarch.ascx&n=a210z181029
 k_18_USD <- 3.7930
 
-k_18_salary <- k_18_salary %>% 
-  mutate(case_when(
-    Q9 != "I do not wish to disclose my approximate yearly compensation" ~ salary_dirty_year_pln = parse_number(Q9) * k_18_USD),
-         salary_dirty_month_pln = salary_dirty_year_pln / 12)
-
-#### Q9 is a range!
+ggplot(k_18_salary) + geom_bar(aes(x = Q9, fill = Q8), position = "dodge") +
+  coord_flip()
