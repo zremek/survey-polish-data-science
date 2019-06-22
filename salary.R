@@ -65,6 +65,10 @@ png("boxpl_k_17.png", width = 160, height = 75, units = "mm", res = 300)
 plot(boxpl_k_17) # Rys. 15. in chapter 5.1.3.
 dev.off()
 
+ggplot(k_17_salary %>% 
+         filter(!is.na(salary_clean_month_pln))) +
+  geom_boxplot(aes(x = doswiadczenie, y = salary_clean_month_pln))
+
 # exchange rate to PLN for October 29th 2018
 # https://www.nbp.pl/home.aspx?navid=archa&c=/ascx/tabarch.ascx&n=a210z181029
 k_18_USD <- 3.7930
