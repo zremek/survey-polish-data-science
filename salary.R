@@ -9,7 +9,10 @@ kaggle_17_pl$CompensationCurrency %>% table(useNA = "always")
 kaggle_17_pl$CompensationAmount %>% head(10)
 parse_number(kaggle_17_pl$CompensationAmount) %>% summary()
 
-k_17_salary <- kaggle_17_pl %>% select(CompensationAmount, CompensationCurrency, Tenure)
+k_17_salary <- kaggle_17_pl %>% 
+  filter(DataScienceIdentitySelect != "No" | is.na(DataScienceIdentitySelect)) %>% 
+  select(CompensationAmount, CompensationCurrency, Tenure)
+  
 k_18_salary <- kaggle_18_pl %>% select(Q8, Q9)
 so_18_salary <- so_18_pl %>% filter(is_ds_or_ml == TRUE) %>% 
   select(ConvertedSalary, YearsCodingProf)
@@ -57,13 +60,19 @@ boxpl_k_17 <- ggplot(k_17_salary %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   labs(title = "Zarobki rosną wraz z długością doświadczenia zawodowego\ndla trzech środkowych kategorii doświadczenia",
        subtitle = "dla kategorii skrajnych zależność jest niejednoznaczna",
-       caption = "Dane z ankiety Kaggle 2017 [n ważnych = 54]",
+       caption = "Dane z ankiety Kaggle 2017 [n ważnych = 47]",
        y = "Miesięczne zarobki brutto lub netto [PLN]",
        x = "Doświadczenie zawodowe w analizie danych")
 
-png("boxpl_k_17.png", width = 160, height = 75, units = "mm", res = 300)
-plot(boxpl_k_17) # Rys. 15. in chapter 5.1.3.
-dev.off()
+k_17_salary %>% 
+  group_by(doswiadczenie) %>% 
+  summarise(n = n(), 
+            n_zar_T = mean(!is.na(salary_clean_month_pln)) * sum(n), 
+            n_zar_F = mean(is.na(salary_clean_month_pln)) * sum(n))
+
+# png("boxpl_k_17.png", width = 160, height = 75, units = "mm", res = 300)
+# plot(boxpl_k_17) # Rys. 15. in chapter 5.1.3.
+# dev.off()
 
 ggplot(k_17_salary %>% 
          filter(!is.na(salary_clean_month_pln))) +
