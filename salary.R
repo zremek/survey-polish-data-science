@@ -63,9 +63,12 @@ k_17_salary$salary_clean_month_pln[5] <- 96 * 1000 / 12
 boxplot(k_17_salary$salary_clean_month_pln ~ k_17_salary$Tenure)
 by(k_17_salary$salary_clean_month_pln, k_17_salary$doswiadczenie, summary)
 
-boxpl_k_17 <- ggplot(k_17_salary %>% 
+boxpl_k_17 <- ggplot(k_17_salary %>%
          filter(!is.na(salary_clean_month_pln))) +
   geom_boxplot(aes(x = doswiadczenie, y = salary_clean_month_pln)) +
+  geom_dotplot(aes(x = doswiadczenie, y = salary_clean_month_pln), 
+             alpha = 1/4, binaxis = 'y', stackdir = 'center',
+             dotsize = 0.7) +
   coord_flip() +
   theme_minimal(base_family = "serif", base_size = 10) +
   labs(title = "Zarobki rosną wraz z długością doświadczenia zawodowego\ndla trzech środkowych kategorii doświadczenia",
@@ -169,13 +172,13 @@ so_18_salary %>% filter(ConvertedSalary > 0 | is.na(ConvertedSalary)) %>%
            n_zar_T = mean(!is.na(ConvertedSalary)) * sum(n), 
            n_zar_F = mean(is.na(ConvertedSalary)) * sum(n))
 
-so_19_salary$ConvertedComp %>% summary() # 73 from 111, 66%. 111 - 37 NA's = 74 entries but one is "0" 
-so_19_salary %>% filter(ConvertedComp > 0 | is.na(ConvertedComp)) %>% 
-  group_by(YearsCodePro) %>% 
-  summarise(n = n(), 
-            n_zar_T = mean(!is.na(ConvertedComp)) * sum(n), 
-            n_zar_F = mean(is.na(ConvertedComp)) * sum(n)) %>% 
-  View() # 0-29 years of exp
+# so_19_salary$ConvertedComp %>% summary() # 73 from 111, 66%. 111 - 37 NA's = 74 entries but one is "0" 
+# so_19_salary %>% filter(ConvertedComp > 0 | is.na(ConvertedComp)) %>% 
+#   group_by(YearsCodePro) %>% 
+#   summarise(n = n(), 
+#             n_zar_T = mean(!is.na(ConvertedComp)) * sum(n), 
+#             n_zar_F = mean(is.na(ConvertedComp)) * sum(n)) %>% 
+#   View() # 0-29 years of exp
 
 so_18_salary <- so_18_salary %>% mutate(salary_clean_month_pln = case_when(
   ConvertedSalary > 0 ~ ConvertedSalary * so_18_USD / 12),
@@ -218,7 +221,13 @@ so_bind_18_19_salary <- bind_rows(so_18_salary, so_19_salary)
 
 boxpl_so_18_19 <- ggplot(so_bind_18_19_salary %>%
                        filter(!is.na(salary_clean_month_pln))) +
-  geom_boxplot(aes(x = doswiadczenie, y = salary_clean_month_pln, fill = zrodlo)) +
+  geom_boxplot(aes(x = doswiadczenie, y = salary_clean_month_pln, fill = zrodlo),
+               position = position_dodge(1)) +
+  geom_dotplot(aes(x = doswiadczenie, y = salary_clean_month_pln, fill = zrodlo),
+               binaxis = 'y', stackdir = "center",
+               position = position_dodge(1),
+               alpha = 1/3, dotsize = 2,
+               binwidth = 500, show.legend = FALSE) +
   coord_flip() +
   theme_minimal(base_family = "serif", base_size = 10) +
   theme(legend.position = "bottom") +
@@ -230,6 +239,6 @@ boxpl_so_18_19 <- ggplot(so_bind_18_19_salary %>%
        y = "Miesięczne zarobki brutto na pełen etat [PLN]",
        x = "Doświadczenie w zawodowym pisaniu kodu")
 
-# png("boxpl_so_18_19.png", width = 160, height = 120, units = "mm", res = 300)
-# plot(boxpl_so_18_19) # Rys. 17. in chapter 5.1.3.
-# dev.off()
+png("boxpl_so_18_19.png", width = 160, height = 140, units = "mm", res = 300)
+plot(boxpl_so_18_19) # Rys. 17. in chapter 5.1.3.
+dev.off()
