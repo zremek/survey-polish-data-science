@@ -71,8 +71,7 @@ boxpl_k_17 <- ggplot(k_17_salary %>%
              dotsize = 0.7) +
   coord_flip() +
   theme_minimal(base_family = "serif", base_size = 10) +
-  labs(title = "Zarobki rosną wraz z długością doświadczenia zawodowego\ndla trzech środkowych kategorii doświadczenia",
-       subtitle = "dla kategorii skrajnych zależność jest niejednoznaczna",
+  labs(title = "Zarobki rosną wraz z długością doświadczenia zawodowego\ndla trzech środkowych kategorii doświadczenia.\nDla kategorii skrajnych zależność jest niejednoznaczna",
        caption = "Dane z ankiety Kaggle 2017 [n ważnych = 46]",
        y = "Miesięczne zarobki brutto lub netto [PLN]",
        x = "Doświadczenie zawodowe w analizie danych")
@@ -141,8 +140,7 @@ bar_k_18_salary <- ggplot(k_18_salary %>%
   scale_y_continuous(labels = scales::percent) +
   # coord_flip() +
   # theme(legend.position = "bottom") +
-  labs(title = "Częstość odmów/braków odpowiedzi o zarobkach rośnie\nwraz z długością doświadczenia zawodowego",
-       subtitle = "zarobki rosną wraz z długością doświadczenia zawodowego\npoza kategorią najwyższą 'więcej niż 10 lat",
+  labs(title = 'Częstość odmów/braków odpowiedzi o zarobkach rośnie\nwraz z długością doświadczenia zawodowego.\nZarobki rosną wraz z długością doświadczenia zawodowego\npoza kategorią najwyższą "więcej niż 10 lat"',
        caption = 'Dane z ankiety Kaggle 2018 [n ważnych = 228]',
        x = "Doświadczenie zawodowe w analizie danych",
        y = NULL)
@@ -151,7 +149,7 @@ bar_k_18_salary <- ggplot(k_18_salary %>%
 # plot(bar_k_18_salary) # Rys. 16. in chapter 5.1.3.
 # dev.off()
 
-prop.table(table(k_18_salary$zarobki, k_18_salary$doswiadczenie), 2)
+# prop.table(table(k_18_salary$zarobki, k_18_salary$doswiadczenie), 2)
     
 ### so 19 & 18 bind and plot
 
@@ -233,12 +231,11 @@ boxpl_so_18_19 <- ggplot(so_bind_18_19_salary %>%
   theme(legend.position = "bottom") +
   scale_fill_manual(values = c("#80b1d3", "#fdb462"),
                     name = "Źródło") +
-  labs(title = "Zarobki rosną wraz z długością doświadczenia zawodowego",
-       subtitle = "zarobki dla tych samych kategorii doświadczenia wzrosły w czasie",
+  labs(title = "Zarobki rosną wraz z długością doświadczenia zawodowego.\nZarobki dla tych samych kategorii doświadczenia wzrosły w czasie",
        caption = "Dane z ankiet Stack Overflow 2018 i 2019",
        y = "Miesięczne zarobki brutto na pełen etat [PLN]",
        x = "Doświadczenie w zawodowym pisaniu kodu")
 
-png("boxpl_so_18_19.png", width = 160, height = 140, units = "mm", res = 300)
-plot(boxpl_so_18_19) # Rys. 17. in chapter 5.1.3.
-dev.off()
+# png("boxpl_so_18_19.png", width = 160, height = 140, units = "mm", res = 300)
+# plot(boxpl_so_18_19) # Rys. 17. in chapter 5.1.3.
+# dev.off()

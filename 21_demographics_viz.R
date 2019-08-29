@@ -125,7 +125,6 @@ wiek <- ggplot(demogr %>% filter(Źródło != "PyData 2018 [n = 284]")) +
   scale_y_continuous(labels = scales::percent) +
   # coord_flip() +
   labs(title = "W każdym ze źródeł najczęściej wskazywano wiek od 25 do 34 lat",
-       subtitle = "osoby od 35 r.ż. stanowią nie więcej niż 1/4 badanych (Kaggle 2017 i 2018)",
        caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
        x = "Źródło",
        y = NULL)
@@ -186,8 +185,7 @@ poziom <- ggplot(demogr %>% filter(Źródło != "PyData 2018 [n = 284]")) +
   scale_fill_brewer(palette = "Set3") +
   scale_y_continuous(labels = scales::percent) +
   # coord_flip() +
-  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie magisterskie",
-       subtitle = "ale udział osób z doktoratem jak i wykształceniem średnim\nsięga 1/6 wskazań dla różnych źródeł",
+  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie magisterskie,\nale udział osób z doktoratem, jak i wykszt, średnim sięga 1/6 wskazań",
        caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
        x = "Źródło",
        y = NULL,
@@ -246,8 +244,7 @@ kierunek <- ggplot(demogr %>%
   scale_fill_brewer(palette = "Set3") +
   scale_y_continuous(labels = scales::percent) +
   # coord_flip() +
-  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie informatyczne",
-       subtitle = "w drugiej kolejności wskazania dotyczą kierunków matematycznych/statystycznych\nlub medycznych/przyrodniczych",
+  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie informatyczne,\nw drugiej kolejności wskazywano wykszt. matematyczne/statystyczne\nlub medyczne/przyrodnicze",
        caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
        x = "Źródło",
        y = NULL,
@@ -315,8 +312,7 @@ plec_wiek <- demogr %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   guides(colour = "none") +
   coord_flip() +
-  labs(title = "Udział osób w wieku 18 - 24 jest o ponad 6 pp. wyższy\nwśród kobiet niż wśród mężczyzn",
-       subtitle = 'brak kobiet w grupach wiekowych "mniej niż 18 lat" i "55 - 69"' ,
+  labs(title = 'Udział osób w wieku 18 - 24 jest o ponad 6 pp. wyższy\nwśród kobiet niż wśród mężczyzn.\nBrak kobiet w grupach wiekowych: "mniej niż 18 lat" i "55 - 69"' ,
        caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
        x = 'Wiek [wykluczono kategorię "Brak/odmowa odp."]',
        y = "Różnica w udziale kategorii wiekowej dla wybranych płci [pp. = % kobiet - % mężczyzn]")
@@ -350,8 +346,7 @@ plec_poziom <- demogr %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   guides(colour = "none") +
   coord_flip() +
-  labs(title = "Udział osób z wykształceniem magisterskim jest\no ponad 9 pp. wyższy wśród kobiet niż wśród mężczyzn",
-       subtitle = 'brak kobiet z wykształceniem podstawowym' ,
+  labs(title = "Udział osób z wykształceniem magisterskim jest\no ponad 9 pp. wyższy wśród kobiet niż wśród mężczyzn.\nBrak kobiet z wykształceniem podstawowym" ,
        caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
        x = 'Poziom wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
        y = "Różnica w udziale poziomu wykształcenia dla wybranych płci\n[pp. = % kobiet - % mężczyzn]")
@@ -424,8 +419,7 @@ wiek_kier <- demogr %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   guides(colour = "none") +
   coord_flip() +
-labs(title = "Udział osób z wykształceniem informatycznym jest\no prawie 13 pp. wyższy wśród osób do 34 r.ż.\nniż dla osób w wieku 35 lat i starszych",
-     subtitle = 'odwrotnie jest dla wykształcenia medycznego/przyrodnicznego' ,
+labs(title = "Udział osób z wykształceniem informatycznym jest\no prawie 13 pp. wyższy wśród osób do 34 r.ż.\nniż dla osób w wieku 35 lat i starszych.\nOdwrotnie jest dla wykształcenia medycznego/przyrodnicznego" ,
      caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
      x = 'Kierunek wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
      y = "Różnica w udziale kierunku wykształcenia dla grup wiekowych\n[pp. = % do 34 r.ż. - % od 35 r.ż.]")
