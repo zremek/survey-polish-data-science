@@ -1,5 +1,6 @@
 library(tidyverse)
 library(scales)
+library(cowplot)
 
 demogr <- read_csv("demographics.csv")
 
@@ -287,7 +288,7 @@ ggplot(data = demogr %>%
   geom_bar(aes(x = Płeć, fill = Wiek), position = "fill")  
 
 #### show diff
-plec_wiek <- demogr %>% 
+plec_wiek_df <- demogr %>% 
   filter(Płeć %in% c("Kobieta", "Mężczyzna"),
          Wiek != "Brak/odmowa odp.", 
          Źródło != "WhyR? 2017 [n = 202]") %>%
@@ -297,7 +298,9 @@ plec_wiek <- demogr %>%
             Kobiety = sum(Płeć == "Kobieta")) %>% 
   mutate(pct_M = Mężczyźni / sum(Mężczyźni),
          pct_K = Kobiety / sum(Kobiety),
-         pct_diff = 100 * (pct_K - pct_M)) %>% 
+         pct_diff = pct_K - pct_M)
+
+plec_wiek_lolipop <- plec_wiek_df %>% 
   ggplot() +
   geom_point(aes(x = fct_rev(Wiek), y = pct_diff, 
                  colour = pct_diff >= 0), size = 5) +
@@ -312,16 +315,37 @@ plec_wiek <- demogr %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   guides(colour = "none") +
   coord_flip() +
-  labs(title = 'Udział osób w wieku 18 - 24 jest o ponad 6 pp. wyższy\nwśród kobiet niż wśród mężczyzn.\nBrak kobiet w grupach wiekowych: "mniej niż 18 lat" i "55 - 69"' ,
+  labs(title = '11B',
        caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
-       x = 'Wiek [wykluczono kategorię "Brak/odmowa odp."]',
-       y = "Różnica w udziale kategorii wiekowej dla wybranych płci [pp. = % kobiet - % mężczyzn]")
+       x = 'Wiek\n[wykluczono kategorię "Brak/odmowa odp."]',
+       y = "Różnica w udziale kategorii wiekowej dla wybranych płci [frakcja kobiet - frakcja mężczyzn]")
 
-# png("plec_wiek.png", width = 160, height = 85, units = "mm", res = 300)
+plec_wiek_col <- plec_wiek_df %>% 
+  select(Wiek, pct_M, pct_K) %>% 
+  pivot_longer(cols = pct_M:pct_K, 
+               names_to = 'plec',
+               values_to = 'pct') %>% 
+  ggplot(aes(x = Wiek, y = pct, fill = plec)) + 
+  geom_col(position = 'dodge', colour = "black") +
+  labs(title = '11A', 
+       subtitle = 'Udział osób w wieku 18 - 24 jest o ponad 6 pp. wyższy wśród kobiet niż wśród mężczyzn.\nBrak kobiet w grupach wiekowych: "mniej niż 18 lat" i "55 - 69"',
+       x = 'Wiek [wykluczono kategorię "Brak/odmowa odp."]',
+       y = "Frakcja [każdy Wymiar = 1]") + 
+  scale_fill_brewer(palette = "Set3", name = "Wymiar:",
+                    labels = c('Kobiety [n = 71]', 'Mężczyźni [n = 487]')) +
+  theme_minimal(base_family = "serif", base_size = 10) +
+  theme(legend.position = "bottom", legend.direction = "horizontal", legend.box.just = "left")
+
+plec_wiek <- plot_grid(plot_grid(plec_wiek_col,
+                               plec_wiek_lolipop,
+                               nrow = 2,
+                               rel_heights = c(2, 1)))
+
+# png("plec_wiek.png", width = 160, height = 180, units = "mm", res = 300)
 # plot(plec_wiek) # Rys. 11. in chapter 5.1.
 # dev.off()
 
-plec_poziom <- demogr %>% 
+plec_poziom_df <- demogr %>% 
   filter(Płeć %in% c("Kobieta", "Mężczyzna"),
          `Poziom wykształcenia` != "Brak/odmowa odp.", 
          Źródło != "WhyR? 2017 [n = 202]") %>%
@@ -331,7 +355,9 @@ plec_poziom <- demogr %>%
             Kobiety = sum(Płeć == "Kobieta")) %>% 
   mutate(pct_M = Mężczyźni / sum(Mężczyźni),
          pct_K = Kobiety / sum(Kobiety),
-         pct_diff = 100 * (pct_K - pct_M)) %>% 
+         pct_diff = pct_K - pct_M)
+
+plec_poziom_lolipop <- plec_poziom_df %>% 
   ggplot() +
   geom_point(aes(x = fct_rev(`Poziom wykształcenia`), y = pct_diff, 
                  colour = pct_diff >= 0), size = 5) +
@@ -346,12 +372,33 @@ plec_poziom <- demogr %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   guides(colour = "none") +
   coord_flip() +
-  labs(title = "Udział osób z wykształceniem magisterskim jest\no ponad 9 pp. wyższy wśród kobiet niż wśród mężczyzn.\nBrak kobiet z wykształceniem podstawowym" ,
+  labs(title = "12B" ,
        caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
        x = 'Poziom wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
-       y = "Różnica w udziale poziomu wykształcenia dla wybranych płci\n[pp. = % kobiet - % mężczyzn]")
+       y = "Różnica w udziale poziomu wykształcenia dla wybranych płci\n[frakcja kobiet - frakcja mężczyzn]")
 
-# png("plec_poziom.png", width = 160, height = 85, units = "mm", res = 300)
+plec_poziom_col <- plec_poziom_df %>% 
+  select(`Poziom wykształcenia`, pct_M, pct_K) %>% 
+  pivot_longer(cols = pct_M:pct_K, 
+               names_to = 'plec',
+               values_to = 'pct') %>% 
+  ggplot(aes(x = `Poziom wykształcenia`, y = pct, fill = plec)) + 
+  geom_col(position = 'dodge', colour = "black") +
+  labs(title = '12A', 
+       subtitle = 'Udział osób z wykształceniem magisterskim jest o ponad 9 pp. wyższy wśród kobiet\nniż wśród mężczyzn. Brak kobiet z wykształceniem podstawowym',
+       x = 'Poziom wykształcenia [wykluczono kategorię "Brak/odmowa odp."]',
+       y = "Frakcja [każdy Wymiar = 1]") + 
+  scale_fill_brewer(palette = "Set3", name = "Wymiar:",
+                    labels = c('Kobiety [n = 71]', 'Mężczyźni [n = 487]')) +
+  theme_minimal(base_family = "serif", base_size = 10) +
+  theme(legend.position = "bottom", legend.direction = "horizontal", legend.box.just = "left")
+
+plec_poziom <- plot_grid(plot_grid(plec_poziom_col,
+                                 plec_poziom_lolipop,
+                                 nrow = 2,
+                                 rel_heights = c(2, 1)))
+# 
+# png("plec_poziom.png", width = 160, height = 180, units = "mm", res = 300)
 # plot(plec_poziom) # Rys. 12. in chapter 5.1.
 # dev.off()
 
@@ -395,7 +442,7 @@ demogr %>%
   #      y = "Różnica w udziale poziomu wykształcenia dla wybranych płci\n[pp. = % kobiet - % mężczyzn]")
 
 
-wiek_kier <- demogr %>% 
+wiek_kier_df <- demogr %>% 
   filter(`Kierunek wykształcenia` != "Brak/odmowa odp.") %>%
   mutate(older_than_34 = Wiek %in% c("35 - 44", "45 - 54", "55 - 69")) %>%  
   group_by(`Kierunek wykształcenia`) %>% 
@@ -404,7 +451,9 @@ wiek_kier <- demogr %>%
             powyzej_34 = sum(older_than_34 == TRUE)) %>% 
   mutate(pct_do_34 = do_34 / sum(do_34),
          pct_powyzej_34 = powyzej_34 / sum(powyzej_34),
-         pct_diff = 100 * (pct_do_34 - pct_powyzej_34)) %>% 
+         pct_diff = pct_do_34 - pct_powyzej_34) 
+
+wiek_kier_lolipop <- wiek_kier_df %>% 
   ggplot() +
   geom_point(aes(x = fct_rev(`Kierunek wykształcenia`), y = pct_diff, 
                  colour = pct_diff >= 0), size = 5) +
@@ -419,11 +468,34 @@ wiek_kier <- demogr %>%
   theme_minimal(base_family = "serif", base_size = 10) +
   guides(colour = "none") +
   coord_flip() +
-labs(title = "Udział osób z wykształceniem informatycznym jest\no prawie 13 pp. wyższy wśród osób do 34 r.ż.\nniż dla osób w wieku 35 lat i starszych.\nOdwrotnie jest dla wykształcenia medycznego/przyrodnicznego" ,
+labs(title = "13B" ,
      caption = 'Połączono dane z ankiet Kaggle 2017 i 2018 oraz Stack Overflow 2018 i 2019',
      x = 'Kierunek wykształcenia\n[wykluczono kategorię "Brak/odmowa odp."]',
-     y = "Różnica w udziale kierunku wykształcenia dla grup wiekowych\n[pp. = % do 34 r.ż. - % od 35 r.ż.]")
+     y = "Różnica w udziale kierunku wykształcenia dla grup wiekowych\n[frakcja do 34 r.ż. - frakcja od 35 r.ż.]")
 
-# png("wiek_kier.png", width = 160, height = 85, units = "mm", res = 300)
+
+wiek_kier_col <- wiek_kier_df %>% 
+  select(`Kierunek wykształcenia`, pct_do_34, pct_powyzej_34) %>% 
+  pivot_longer(cols = pct_do_34:pct_powyzej_34, 
+               names_to = 'wiek_34',
+               values_to = 'pct') %>% 
+  ggplot(aes(x = `Kierunek wykształcenia`, y = pct, fill = wiek_34)) + 
+  geom_col(position = 'dodge', colour = "black") +
+  labs(title = '12A', 
+       subtitle = 'Udział osób z wykształceniem informatycznym jest o prawie 13 pp. wyższy wśród osób do 34 r.ż.\nniż dla osób w wieku 35 lat i starszych. Odwrotnie jest dla wykształcenia medycznego/przyrodnicznego',
+       x = 'Kierunek wykształcenia [wykluczono kategorię "Brak/odmowa odp."]',
+       y = "Frakcja [każdy Wymiar = 1]") + 
+  scale_fill_brewer(palette = "Set3", name = "Wymiar:",
+                    labels = c('do 34 r.ż. [n = 425]', 'od 35 r.ż. [n = 114]')) +
+  theme_minimal(base_family = "serif", base_size = 10) +
+  theme(legend.position = "bottom", legend.direction = "horizontal", legend.box.just = "left",
+        axis.text.x = element_text(angle = 20))
+
+wiek_kier <- plot_grid(plot_grid(wiek_kier_col,
+                                   wiek_kier_lolipop,
+                                   nrow = 2,
+                                   rel_heights = c(2, 1)))
+
+# png("wiek_kier.png", width = 160, height = 180, units = "mm", res = 300)
 # plot(wiek_kier) # Rys. 12. in chapter 5.1.
 # dev.off()
