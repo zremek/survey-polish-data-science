@@ -136,7 +136,28 @@ bar_k_18_salary <- ggplot(k_18_salary %>%
          filter(!is.na(doswiadczenie))) + 
   geom_bar(aes(x = doswiadczenie, fill = zarobki), position = "fill", colour = "black", width = 0.7) +
   theme_minimal(base_family = "serif", base_size = 10) +
-  scale_fill_brewer(palette = "Set3", name = "Przybliżony przedział\nmiesięcznych zarobków\nbrutto lub netto") +
+  scale_fill_manual(
+    breaks = c(
+      "do 3 100 PLN",
+      "powyżej 3 100 do 6 300 PLN",
+      "powyżej 6 300 do 9 500 PLN",
+      "powyżej 9 500 do 12 600 PLN",
+      "powyżej 12 600 do 15 800 PLN",
+      "powyżej 15 800 do 18 900 PLN",
+      "powyżej 18 900 do 22 100 PLN",
+      "powyżej 22 100 PLN",
+      "brak/odmowa odp."), 
+    values = c(
+      "#f7fbff", 
+      "#deebf7",
+      "#c6dbef",
+      "#9ecae1",
+      "#6baed6",
+      "#4292c6",
+      "#2171b5",
+      "#084594",
+      "gray"),
+    name = "Przybliżony przedział\nmiesięcznych zarobków\nbrutto lub netto") +
   scale_y_continuous(labels = scales::percent) +
   # coord_flip() +
   # theme(legend.position = "bottom") +
@@ -145,9 +166,9 @@ bar_k_18_salary <- ggplot(k_18_salary %>%
        x = "Doświadczenie zawodowe w analizie danych",
        y = NULL)
 
-# png("bar_k_18_salary.png", width = 160, height = 180, units = "mm", res = 300)
-# plot(bar_k_18_salary) # Rys. 16. in chapter 5.1.3.
-# dev.off()
+png("bar_k_18_salary.png", width = 160, height = 130, units = "mm", res = 300)
+plot(bar_k_18_salary) # Rys. 16. in chapter 5.1.3.
+dev.off()
 
 # prop.table(table(k_18_salary$zarobki, k_18_salary$doswiadczenie), 2)
     

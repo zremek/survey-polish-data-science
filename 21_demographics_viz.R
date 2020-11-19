@@ -121,16 +121,16 @@ demogr %>% mutate(older_than_34 = Wiek %in% c("35 - 44", "45 - 54", "55 - 69")) 
 wiek <- ggplot(demogr %>% filter(Źródło != "PyData 2018 [n = 284]")) +
   geom_bar(aes(Źródło, fill = Wiek), position = "fill", colour = "black", width = 0.7) +
   theme_minimal(base_family = "serif", base_size = 10) +
-  theme(axis.text.x = element_text(angle = 25)) +
+  # theme(axis.text.x = element_text(angle = 25)) +
   scale_fill_brewer(palette = "Set3") +
   scale_y_continuous(labels = scales::percent) +
-  # coord_flip() +
+  coord_flip() +
   labs(title = "W każdym ze źródeł najczęściej wskazywano wiek od 25 do 34 lat",
        caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
        x = "Źródło",
        y = NULL)
 
-# png("wiek.png", width = 160, height = 180, units = "mm", res = 300)
+# png("wiek.png", width = 160, height = 80, units = "mm", res = 300)
 # plot(wiek) # Rys. 8. in chapter 5.1.
 # dev.off()
 
@@ -182,18 +182,18 @@ poziom <- ggplot(demogr %>% filter(Źródło != "PyData 2018 [n = 284]")) +
   geom_bar(aes(Źródło, fill = `Poziom wykształcenia`),
            position = "fill", colour = "black", width = 0.7) +
   theme_minimal(base_family = "serif", base_size = 10) +
-  theme(axis.text.x = element_text(angle = 20)) +
+  # theme(axis.text.x = element_text(angle = 20)) +
   scale_fill_brewer(palette = "Set3") +
   scale_y_continuous(labels = scales::percent) +
-  # coord_flip() +
-  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie magisterskie,\nale udział osób z doktoratem, jak i wykszt, średnim sięga 1/6 wskazań",
+  coord_flip() +
+  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie\nmagisterskie, ale udział osób z doktoratem, jak i wykszt. średnim\nsięga 1/6 wskazań",
        caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
        x = "Źródło",
        y = NULL,
        fill = "Poziom wykształcenia")
 
-# png("poziom.png", width = 160, height = 140, units = "mm", res = 300)
-# plot(poziom) # Rys. 8. in chapter 5.1.
+# png("poziom.png", width = 160, height = 80, units = "mm", res = 300)
+# plot(poziom) # Rys. 9. in chapter 5.1.
 # dev.off()
 
 # demogr %>% group_by(kierunek_wykształcenia) %>% summarise(n = n()) %>% View()
@@ -241,17 +241,17 @@ kierunek <- ggplot(demogr %>%
   geom_bar(aes(Źródło, fill = `Kierunek wykształcenia`),
            position = "fill", colour = "black", width = 0.7) +
   theme_minimal(base_family = "serif", base_size = 10) +
-  theme(axis.text.x = element_text(angle = 20)) +
+  # theme(axis.text.x = element_text(angle = 20)) +
   scale_fill_brewer(palette = "Set3") +
   scale_y_continuous(labels = scales::percent) +
-  # coord_flip() +
-  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie informatyczne,\nw drugiej kolejności wskazywano wykszt. matematyczne/statystyczne\nlub medyczne/przyrodnicze",
+  coord_flip() +
+  labs(title = "W każdym ze źródeł najczęściej wskazywano wykształcenie\ninformatyczne, w drugiej kolejności wskazywano wykszt.\nmatematyczne/statystyczne lub medyczne/przyrodnicze",
        caption = 'Połączono dane z ankiet wymienionych na osi "Źródło"',
        x = "Źródło",
        y = NULL,
        fill = "Kierunek wykształcenia")
 
-# png("kierunek.png", width = 160, height = 140, units = "mm", res = 300)
+# png("kierunek.png", width = 160, height = 95, units = "mm", res = 300)
 # plot(kierunek) # Rys. 8. in chapter 5.1.
 # dev.off()
 
