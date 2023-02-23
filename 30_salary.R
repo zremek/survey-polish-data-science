@@ -51,9 +51,9 @@ k_17_salary <- k_17_salary %>%
       salary_dirty_year_pln > 23000 ~ salary_dirty_year_pln / 12), 
     doswiadczenie = fct_recode(.f = Tenure, 
                                `mniej niż 1 rok` = "Less than a year",
-                               `1 - 2 lata` = "1 to 2 years",
-                               `3 - 5 lat` = "3 to 5 years",
-                               `6 - 10 lat` = "6 to 10 years",
+                               `1–2 lata` = "1 to 2 years",
+                               `3–5 lat` = "3 to 5 years",
+                               `6–10 lat` = "6 to 10 years",
                                `więcej niż 10 lat` = "More than 10 years"),
     doswiadczenie = fct_relevel(.f = doswiadczenie, "mniej niż 1 rok", after = 0))
 
@@ -166,9 +166,9 @@ bar_k_18_salary <- ggplot(k_18_salary %>%
        x = "Doświadczenie zawodowe w analizie danych",
        y = NULL)
 
-png("bar_k_18_salary.png", width = 160, height = 130, units = "mm", res = 300)
-plot(bar_k_18_salary) # Rys. 16. in chapter 5.1.3.
-dev.off()
+# png("bar_k_18_salary.png", width = 160, height = 130, units = "mm", res = 300)
+# plot(bar_k_18_salary) # Rys. 16. in chapter 5.1.3.
+# dev.off()
 
 # prop.table(table(k_18_salary$zarobki, k_18_salary$doswiadczenie), 2)
     
@@ -202,12 +202,12 @@ so_18_salary %>% filter(ConvertedSalary > 0 | is.na(ConvertedSalary)) %>%
 so_18_salary <- so_18_salary %>% mutate(salary_clean_month_pln = case_when(
   ConvertedSalary > 0 ~ ConvertedSalary * so_18_USD / 12),
   doswiadczenie = fct_recode(YearsCodingProf,
-                             `0 - 2 lata` = "0-2 years",
-                             `3 - 5 lat` = "3-5 years",
-                             `6 - 8 lat` = "6-8 years",
-                             `9 - 14 lat` = "9-11 years",
-                             `9 - 14 lat` = "12-14 years"),
-  doswiadczenie = fct_relevel(doswiadczenie, "9 - 14 lat", after = Inf),
+                             `0–2 lata` = "0-2 years",
+                             `3–5 lat` = "3-5 years",
+                             `6–8 lat` = "6-8 years",
+                             `9–14 lat` = "9-11 years",
+                             `9–14 lat` = "12-14 years"),
+  doswiadczenie = fct_relevel(doswiadczenie, "9–14 lat", after = Inf),
   zrodlo = "Stack Overflow 2018 [n ważnych = 52]")
 
 so_19_salary$ConvertedComp[43] <- 36 * 1000 # fix small outlier
@@ -215,10 +215,10 @@ so_19_salary$ConvertedComp[43] <- 36 * 1000 # fix small outlier
 so_19_salary <- so_19_salary %>% mutate(salary_clean_month_pln = case_when(
   ConvertedComp > 0 ~ ConvertedComp * so_19_USD / 12),
   doswiadczenie = fct_collapse(YearsCodePro,
-                             `0 - 2 lata` = c("Less than 1 year", "1", "2"),
-                             `3 - 5 lat` = c("3", "4", "5"),
-                             `6 - 8 lat` = c("6", "7", "8"),
-                             `9 - 14 lat` = c("9", "10", "11", "12", "13", "14"),
+                             `0–2 lata` = c("Less than 1 year", "1", "2"),
+                             `3–5 lat` = c("3", "4", "5"),
+                             `6–8 lat` = c("6", "7", "8"),
+                             `9–14 lat` = c("9", "10", "11", "12", "13", "14"),
                              `więcej niż 14 lat` = c("15", "16", "17", "18", "19",
                                                      "20", "21", "22", "23", "24",
                                                      "25", "26", "27", "28", "29")),
@@ -260,3 +260,4 @@ boxpl_so_18_19 <- ggplot(so_bind_18_19_salary %>%
 # png("boxpl_so_18_19.png", width = 160, height = 140, units = "mm", res = 300)
 # plot(boxpl_so_18_19) # Rys. 17. in chapter 5.1.3.
 # dev.off()
+
