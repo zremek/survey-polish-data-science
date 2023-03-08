@@ -222,8 +222,8 @@ so_19_salary <- so_19_salary %>% mutate(salary_clean_month_pln = case_when(
                              `więcej niż 14 lat` = c("15", "16", "17", "18", "19",
                                                      "20", "21", "22", "23", "24",
                                                      "25", "26", "27", "28", "29")),
-  doswiadczenie = fct_relevel(doswiadczenie, "9 - 14 lat", after = Inf),
-  doswiadczenie = fct_relevel(doswiadczenie, "więcej niż lat", after = Inf), 
+  doswiadczenie = fct_relevel(doswiadczenie, "9–14 lat", after = Inf),
+  doswiadczenie = fct_relevel(doswiadczenie, "więcej niż 14 lat", after = Inf), 
   zrodlo = "Stack Overflow 2019 [n ważnych = 73]")
   
 
